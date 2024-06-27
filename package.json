@@ -64,7 +64,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "name": "react-comic-viewer",
+  "name": "react-comic-viewer-revert",
   "private": false,
   "repository": {
     "type": "git",
