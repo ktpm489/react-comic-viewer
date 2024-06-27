@@ -14,7 +14,7 @@ function Pages(): JSX.Element {
     <Layout>
       <ComicViewer
         direction={isRightToLeft ? "rtl" : "ltr"}
-        initialCurrentPage={1}
+        initialCurrentPage={0}
         initialIsExpansion={false}
         onChangeCurrentPage={(currentPage) => {
           console.log(currentPage);

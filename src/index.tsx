@@ -239,24 +239,44 @@ function ComicViewer({
   const [ref] = useOutsideClickRef(handleClickOnOutside);
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if (disabledPrevPage) {
-        return;
+      if (isRightToLeft) {
+        // keep current old logic
+        if (disabledPrevPage) {
+          return;
+        }
+  
+        setSwitchingFullScreen(false);
+        setCurrentPage(
+          (prevCurrentPage) => prevCurrentPage - (isSingleView ? 1 : 2)
+        );
+      } else {
+        // english (ltr) logic
+        setSwitchingFullScreen(false);
+        setCurrentPage(
+          (prevCurrentPage) => prevCurrentPage + (isSingleView ? 1 : 2) <= pages.length -1 ? prevCurrentPage + (isSingleView ? 1 : 2): prevCurrentPage
+        );
       }
-
-      setSwitchingFullScreen(false);
-      setCurrentPage(
-        (prevCurrentPage) => prevCurrentPage - (isSingleView ? 1 : 2)
-      );
+     
     },
     onSwipedRight: () => {
-      if (disabledNextPage) {
-        return;
+    
+      if (isRightToLeft) {
+        // keep current old logic
+        if (disabledNextPage) {
+          return;
+        }
+        setSwitchingFullScreen(false);
+        setCurrentPage(
+          (prevCurrentPage) => prevCurrentPage + (isSingleView ? 1 : 2)
+        );
+      } else {
+        // english (ltr) logic
+        setSwitchingFullScreen(false);
+        setCurrentPage(
+          (prevCurrentPage) => prevCurrentPage - (isSingleView ? 1 : 2) >= 0 ? prevCurrentPage - (isSingleView ? 1 : 2): prevCurrentPage
+        );
       }
-
-      setSwitchingFullScreen(false);
-      setCurrentPage(
-        (prevCurrentPage) => prevCurrentPage + (isSingleView ? 1 : 2)
-      );
+     
     },
   });
   const { isEnabled } = useMemo(() => screenfull, []);
