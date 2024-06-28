@@ -76,23 +76,24 @@ export type ComicViewerProps = {
   text?: Record<"expansion" | "fullScreen" | "move" | "normal", string>;
 };
 
-function ComicViewer({
-  className,
-  direction = "rtl",
-  initialCurrentPage = 0,
-  initialIsExpansion = false,
-  onChangeCurrentPage,
-  onChangeExpansion,
-  onClickCenter,
-  pages: pagesProp,
-  switchingRatio = 1,
-  text = {
-    expansion: "Expansion",
-    fullScreen: "Full screen",
-    move: "Move",
-    normal: "Normal",
-  },
-}: ComicViewerProps): JSX.Element {
+const ComicViewer = React.forwardRef<any, ComicViewerProps>((props, ref: any) : JSX.Element =>{
+ let {
+    className,
+    direction = "rtl",
+    initialCurrentPage = 0,
+    initialIsExpansion = false,
+    onChangeCurrentPage,
+    onChangeExpansion,
+    onClickCenter,
+    pages: pagesProp,
+    switchingRatio = 1,
+    text = {
+      expansion: "Expansion",
+      fullScreen: "Full screen",
+      move: "Move",
+      normal: "Normal",
+    },
+  }= props
   const isRightToLeft = useMemo(() => direction === "rtl", [direction]);
   const {
     expansion: expansionText,
@@ -236,7 +237,7 @@ function ComicViewer({
   const handleClickOnOutside = useCallback(() => {
     setShowMove(false);
   }, []);
-  const [ref] = useOutsideClickRef(handleClickOnOutside);
+  const [refSubController] = useOutsideClickRef(handleClickOnOutside);
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (isRightToLeft) {
@@ -333,6 +334,15 @@ function ComicViewer({
     onChangeExpansion(isExpansion);
   }, [isExpansion, onChangeExpansion]);
 
+  React.useImperativeHandle(ref, () => {
+    return {
+      handleChange: handleChange,
+      handleClickOnExpansion: handleClickOnExpansion,
+      handleClickOnFullScreen: handleClickOnFullScreen,
+      handleClickOnShowMove: handleClickOnShowMove,
+    }
+  });
+
   return (
     <FullScreen handle={handle}>
       <Wrapper
@@ -399,7 +409,7 @@ function ComicViewer({
         ) : (
           <Controller className={className?.controller}>
             {showMove ? (
-              <SubController className={className?.subController} ref={ref}>
+              <SubController className={className?.subController} ref={refSubController}>
                 <RangeInput
                   className={className?.rangeInput}
                   direction={direction}
@@ -446,9 +456,18 @@ function ComicViewer({
     </FullScreen>
   );
 }
+)
 
-function NoSSRComicViewer(props: ComicViewerProps): JSX.Element | null {
-  return typeof window !== "undefined" ? <ComicViewer {...props} /> : null;
-}
+
+
+const NoSSRComicViewer = React.forwardRef<any,ComicViewerProps>((props, ref) : JSX.Element | null => {
+  return typeof window !== "undefined" ? <ComicViewer {...props} ref={ref} /> : null;
+});
 
 export default NoSSRComicViewer;
+
+
+// function NoSSRComicViewer(props: ComicViewerProps): JSX.Element | null {
+//   return typeof window !== "undefined" ? <ComicViewer {...props} /> : null;
+// }
+// export default NoSSRComicViewer;

@@ -1,20 +1,23 @@
 import ComicViewer from "index";
 import Layout from "components/Layout";
-import React, { ChangeEventHandler, useCallback, useState } from "react";
+import React, { ChangeEventHandler, useCallback, useState, useRef } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 
 function Pages(): JSX.Element {
   const [isRightToLeft, setIsRightToLeft] = useState(true);
+  const childRef = useRef<any>(null);
   const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(() => {
     setIsRightToLeft((prevIsRightToLeft) => !prevIsRightToLeft);
+    
   }, []);
-
   return (
     <Layout>
+      <div style={{padding: '10px'}} onClick={()=>{childRef?.current?.handleClickOnFullScreen()}}><p>Full Screen CallBack</p></div>
       <ComicViewer
         direction={isRightToLeft ? "rtl" : "ltr"}
         initialCurrentPage={0}
+        ref={childRef}
         initialIsExpansion={false}
         onChangeCurrentPage={(currentPage) => {
           console.log(currentPage);
